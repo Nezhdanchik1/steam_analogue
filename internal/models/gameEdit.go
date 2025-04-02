@@ -1,7 +1,6 @@
 package models
 
-type Game struct {
-	Id          int     `json:"id"`
+type GameEdit struct {
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
 	Developer   string  `json:"developer"`

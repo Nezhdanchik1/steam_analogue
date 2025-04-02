@@ -18,3 +18,21 @@ func (g GameRepositoryImpl) GetAllGames() ([]models.Game, error) {
 	err := g.db.Find(&games).Error
 	return games, err
 }
+
+func (g GameRepositoryImpl) GetGameById(id int) (*models.Game, error) {
+	var game models.Game
+	err := g.db.First(&game, id).Error
+	return &game, err
+}
+
+func (g GameRepositoryImpl) CreateGame(game *models.Game) error {
+	return g.db.Create(game).Error
+}
+
+func (g GameRepositoryImpl) UpdateGame(id int, game *models.GameEdit) error {
+	return g.db.Model(&models.Game{}).Where("id = ?", id).Omit("id, CreatedAt").Updates(game).Error
+}
+
+func (g GameRepositoryImpl) DeleteGame(id int) error {
+	return g.db.Delete(&models.Game{}, id).Error
+}
