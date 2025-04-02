@@ -30,7 +30,7 @@ func (g GameRepositoryImpl) CreateGame(game *models.Game) error {
 }
 
 func (g GameRepositoryImpl) UpdateGame(id int, game *models.GameEdit) error {
-	return g.db.Model(&models.Game{}).Where("id = ?", id).Omit("id, CreatedAt").Updates(game).Error
+	return g.db.Model(&models.Game{}).Where("id = ?", id).Omit("id").Updates(game).Error
 }
 
 func (g GameRepositoryImpl) DeleteGame(id int) error {
