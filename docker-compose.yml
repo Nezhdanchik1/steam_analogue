@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17.4-alpine
+    container_name: go-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: nezhdanchik
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: games_DB
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
