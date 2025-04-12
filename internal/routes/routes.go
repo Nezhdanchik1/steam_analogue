@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"week_9_crud/internal/auth"
 	"week_9_crud/internal/db"
 	"week_9_crud/internal/delivery"
 	"week_9_crud/internal/repository"
@@ -10,12 +11,10 @@ import (
 
 func SetupRoutes(r *gin.Engine) {
 	gameRepo := repository.NewGameRepository(db.DB)
-
 	gameService := service.NewGameService(gameRepo)
-
 	gameHandler := delivery.NewGameHandler(gameService)
 
-	// Настроим маршруты
+	// Группа маршрутов для игр
 	games := r.Group("api/games")
 	{
 		games.GET("/", gameHandler.GetAllGames)
@@ -23,5 +22,23 @@ func SetupRoutes(r *gin.Engine) {
 		games.POST("/", gameHandler.CreateGame)
 		games.PUT("/:id", gameHandler.UpdateGame)
 		games.DELETE("/:id", gameHandler.DeleteGame)
+	}
+
+	// Группа маршрутов для авторизации
+	authRoutes := r.Group("api/auth")
+	{
+		// authRoutes.POST("/login", auth.Login)
+		authRoutes.POST("/register", auth.Register)
+		authRoutes.POST("/login", auth.Login)
+	}
+
+	userRepo := repository.NewUserRepository(db.DB)
+	userService := service.NewUserService(userRepo)
+	userHandler := delivery.NewUserHandler(userService)
+	// Группа маршрутов для пользователей
+	userRoutes := r.Group("api/users")
+	{
+		userRoutes.GET("/", userHandler.GetAllUsers)
+		//userRoutes.GET("/:id", userHandler.GetUserById)
 	}
 }
