@@ -34,6 +34,7 @@ func Register(c *gin.Context) {
 	user := models.User{
 		Username: req.Username,
 		Password: string(hashedPassword),
+		Role:     "user",
 	}
 
 	if err := db.DB.Create(&user).Error; err != nil {
@@ -69,4 +70,24 @@ func Login(c *gin.Context) {
 
 	token, _ := GenerateJWT(user.Id)
 	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+func GetCurrentUser(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user not found in context"})
+		return
+	}
+
+	var u models.User
+	if err := db.DB.First(&u, userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id":       u.Id,
+		"role":     u.Role,
+		"username": u.Username,
+	})
 }

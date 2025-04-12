@@ -5,6 +5,7 @@ import (
 	"week_9_crud/internal/auth"
 	"week_9_crud/internal/db"
 	"week_9_crud/internal/delivery"
+	"week_9_crud/internal/middleware"
 	"week_9_crud/internal/repository"
 	"week_9_crud/internal/service"
 )
@@ -39,6 +40,13 @@ func SetupRoutes(r *gin.Engine) {
 	userRoutes := r.Group("api/users")
 	{
 		userRoutes.GET("/", userHandler.GetAllUsers)
-		//userRoutes.GET("/:id", userHandler.GetUserById)
 	}
+
+	protected := r.Group("api/users")
+	protected.Use(middleware.AuthRequired())
+	protected.Use(middleware.RoleMiddleware("admin"))
+	{
+		protected.GET("/me", auth.GetCurrentUser)
+	}
+
 }
