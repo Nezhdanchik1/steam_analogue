@@ -2,19 +2,32 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	migratepg "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"os"
 )
 
 var DB *gorm.DB
 
 func InitDB() {
-	dbUrl := "postgres://nezhdanchik:qwerty@localhost:5433/games_DB?sslmode=disable"
-	sqlDB, err := sql.Open("postgres", dbUrl)
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, relying on system environment")
+	}
+	databaseName := "postgres"
+	dbHost := os.Getenv("DB_HOST")
+	dbName := os.Getenv("DB_NAME")
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASSWORD")
+	dbPort := os.Getenv("DB_PORT")
+	sslmode := "disable"
+	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPass, dbHost, dbPort, dbName, sslmode)
+	sqlDB, err := sql.Open(databaseName, dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}

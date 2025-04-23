@@ -1,18 +1,24 @@
-version: '3.8'
-
 services:
+  app:
+    build: .
+    container_name: steam_analogue
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_PORT: 5432
+      DB_HOST: postgres
+      DB_USER: nezhdanchik
+      DB_PASSWORD: qwerty
+      DB_NAME: games_DB
+
   postgres:
     image: postgres:17.4-alpine
     container_name: go-postgres
-    restart: always
     environment:
       POSTGRES_USER: nezhdanchik
       POSTGRES_PASSWORD: qwerty
       POSTGRES_DB: games_DB
     ports:
       - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
