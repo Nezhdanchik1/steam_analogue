@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"week_9_crud/internal/models"
 )
 
 var DB *gorm.DB
@@ -49,6 +50,10 @@ func InitDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	gormDB.AutoMigrate(&models.Game{})
+	gormDB.AutoMigrate(&models.User{})
+	gormDB.AutoMigrate(&models.Review{})
 
 	DB = gormDB
 }
